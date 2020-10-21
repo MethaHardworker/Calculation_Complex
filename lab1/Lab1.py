@@ -27,25 +27,40 @@ if __name__ == '__main__':
     A = [[1, 1], [1.1, 1]]
     E = np.ones(shape=(2, 2))
     U, s, V = np.linalg.svd(A, full_matrices=True)
-    U1, s_e, V = np.linalg.svd(E, full_matrices=True)
+    U1, s_e, V1 = np.linalg.svd(E, full_matrices=True)
+    print('U:')
+    print(U)
+    print('Sigma:')
+    print(s)
+    print('V:')
+    print(V)
+    print('U1:')
+    print(U1)
+    print('Sigma1:')
+    print(s_e)
+    print('V1:')
+    print(V1)
     a = min(s) / max(s_e)
     print('Eps <', a)
 
     ######## Second Task #######
-    plt.figure()
-    eps = 0
-    step = 0.0001
-    y = []
-    for n in range(2, 100):
-        eps = 0
-        M_rad, M_mid = create_two_matrices(eps, n)
-        while beck_criteria(M_rad, M_mid):
-            eps += step
-            M_rad, M_mid = create_two_matrices(eps, n)
-        # print('n = ', n, 'eps = ', eps)
-        y += [eps]
-    plt.plot(range(2, 100), y)
-    plt.title('Зависимость параметра eps от размерности матрицы')
-    plt.xlabel('n')
-    plt.ylabel('eps')
-    plt.show()
+    # plt.figure()
+    # eps = 0
+    # step = 0.0001
+    # y = []
+    # x_n = [1/(x) for x in range(2, 100)]
+    # for n in range(2, 100):
+    #     eps = 0
+    #     M_rad, M_mid = create_two_matrices(eps, n)
+    #     while beck_criteria(M_rad, M_mid):
+    #         eps += step
+    #         M_rad, M_mid = create_two_matrices(eps, n)
+    #     # print('n = ', n, 'eps = ', eps)
+    #     y += [eps]
+    # plt.plot(range(2, 100), x_n, label='estimation')
+    # plt.plot(range(2, 100), y, label='$\\varepsilon (n)$')
+    # plt.title('Зависимость параметра $\\varepsilon$ от размерности матрицы')
+    # plt.xlabel('n')
+    # plt.ylabel('$\\varepsilon$')
+    # plt.legend()
+    # plt.show()
