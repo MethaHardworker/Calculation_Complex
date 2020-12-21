@@ -1,0 +1,284 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>demointlab</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-14"><meta name="DC.source" content="demointlab.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> demointlab
+<span class="comment">%DEMOINTLAB   Wrapper routine to call INTLAB demos</span>
+<span class="comment">%</span>
+<span class="comment">%A selection of INTLAB demos, call</span>
+<span class="comment">%</span>
+<span class="comment">%  demointlab</span>
+<span class="comment">%</span>
+
+<span class="comment">% written  10/13/12     S.M. Rump</span>
+<span class="comment">% modified 11/07/12     S.M. Rump  INTLAB_larger added</span>
+<span class="comment">% modified 04/04/14     S.M. Rump  end function</span>
+<span class="comment">% modified 05/13/14     S.M. Rump  new demos</span>
+<span class="comment">% modified 01/21/15     S.M. Rump  error if no web available</span>
+<span class="comment">%</span>
+
+  <span class="keyword">if</span> ~exist(<span class="string">'web'</span>,<span class="string">'file'</span>)
+    error([<span class="string">'Command "web" not supported. '</span>, <span class="keyword">...</span>
+           <span class="string">'To see INTLAB demo-files please display the corresponding '</span> <span class="keyword">...</span>
+           <span class="string">'html-files in directory demos/html directly by some browser.     '</span>])
+  <span class="keyword">end</span>
+
+  d = which(<span class="string">'demointlab'</span>);
+  wng = warning;
+  warning <span class="string">off</span>
+  addpath([ d(1:end-13) <span class="string">'\html'</span> ])
+  warning(wng)
+
+  clc
+  disp(<span class="string">'Welcome to INTLAB, the Matlab toolbox for reliable computing.'</span>)
+  disp(<span class="string">' '</span>)
+  disp(<span class="string">'The current version consists of more than 1200 .m-functions with more '</span>)
+  disp(<span class="string">'  than 46 thousand lines of Matlab-code (more than 80 KLOC with comments). '</span>)
+  disp(<span class="string">'The test suite for INTLAB consists of another 82 KLOC. '</span>)
+  disp(<span class="string">' '</span>)
+  <span class="keyword">while</span> 1
+    displaycomments
+    str = input(<span class="string">'select demo '</span>,<span class="string">'s'</span>);
+    <span class="keyword">switch</span> lower(str)
+      <span class="keyword">case</span> <span class="string">'1'</span>, web(<span class="string">'dintlab.html'</span>);
+      <span class="keyword">case</span> <span class="string">'2'</span>, web(<span class="string">'dintlab_larger.html'</span>);
+      <span class="keyword">case</span> <span class="string">'3'</span>, web(<span class="string">'dintval.html'</span>);
+      <span class="keyword">case</span> <span class="string">'4'</span>, web(<span class="string">'darithmetic.html'</span>);
+      <span class="keyword">case</span> <span class="string">'5'</span>, web(<span class="string">'daccsumdot.html'</span>);
+      <span class="keyword">case</span> <span class="string">'6'</span>, web(<span class="string">'daffari.html'</span>);
+      <span class="keyword">case</span> <span class="string">'7'</span>, web(<span class="string">'dglobal.html'</span>);
+      <span class="keyword">case</span> <span class="string">'8'</span>, web(<span class="string">'dfl.html'</span>);
+      <span class="keyword">case</span> <span class="string">'9'</span>, web(<span class="string">'dutility.html'</span>);
+      <span class="keyword">case</span> <span class="string">'a'</span>, web(<span class="string">'dstdfcts.html'</span>);
+      <span class="keyword">case</span> <span class="string">'b'</span>, web(<span class="string">'dgradient.html'</span>);
+      <span class="keyword">case</span> <span class="string">'c'</span>, web(<span class="string">'dhessian.html'</span>);
+      <span class="keyword">case</span> <span class="string">'d'</span>, web(<span class="string">'dtaylor.html'</span>);
+      <span class="keyword">case</span> <span class="string">'e'</span>, web(<span class="string">'dslope.html'</span>);
+      <span class="keyword">case</span> <span class="string">'f'</span>, web(<span class="string">'dpolynom.html'</span>);
+      <span class="keyword">case</span> <span class="string">'g'</span>, web(<span class="string">'dlong.html'</span>);
+      <span class="keyword">case</span> <span class="string">'0'</span>, <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  disp(<span class="string">' '</span>)
+  disp(<span class="string">'Enjoy INTLAB. Comments and suggestions always welcome to rump (at) tuhh.de .'</span>)
+  disp(<span class="string">' '</span>)
+
+<span class="keyword">end</span>  <span class="comment">% function demointlab</span>
+
+
+
+<span class="keyword">function</span> displaycomments
+  disp(<span class="string">' '</span>)
+  disp(<span class="string">'This is a wrapper routine to call several INTLAB demos, selected by numbers. '</span>)
+  disp(<span class="string">' '</span>)
+  disp(<span class="string">'1  A general demo of some features of INTLAB'</span>)
+  disp(<span class="string">'2  Some larger examples with INTLAB'</span>)
+  disp(<span class="string">'3  Some examples of interval computations'</span>)
+  disp(<span class="string">'4  Details about interval arithmetic'</span>)
+  disp(<span class="string">'5  Accurate summation and dot products'</span>)
+  disp(<span class="string">'6  Affine interval arithmetic'</span>)
+  disp(<span class="string">'7  All roots of nonlinear functions and global optimization'</span>)
+  disp(<span class="string">'8  ffl-numbers: k-bit point and interval arithmetic'</span>)
+  disp(<span class="string">'9  Utility routines'</span>)
+  disp(<span class="string">'a  Accurate standard functions'</span>)
+  disp(<span class="string">'b  The gradient toolbox (gradients of multivariate functions)'</span>)
+  disp(<span class="string">'c  The Hessian toolbox (Hessians of multivariate functions)'</span>)
+  disp(<span class="string">'d  The Taylor toolbox (taylor expansion of univariate functions)'</span>)
+  disp(<span class="string">'e  The slope toolbox (slope of multivariate functions'</span>)
+  disp(<span class="string">'f  The polynomial toolbox (univariate and multivariate polynomials'</span>)
+  disp(<span class="string">'g  The long number toolbox (a rudemantary implementation, originally for internal use)'</span>)
+  disp(<span class="string">' '</span>)
+  disp(<span class="string">'0  exit this wrapper'</span>)
+  disp(<span class="string">' '</span>)
+<span class="keyword">end</span>  <span class="comment">% function displaycomments</span>
+</pre><pre class="codeoutput">Welcome to INTLAB, the Matlab toolbox for reliable computing.
+ 
+The current version consists of more than 1200 .m-functions with more 
+  than 46 thousand lines of Matlab-code (more than 80 KLOC with comments). 
+The test suite for INTLAB consists of another 82 KLOC. 
+ 
+ 
+This is a wrapper routine to call several INTLAB demos, selected by numbers. 
+ 
+1  A general demo of some features of INTLAB
+2  Some larger examples with INTLAB
+3  Some examples of interval computations
+4  Details about interval arithmetic
+5  Accurate summation and dot products
+6  Affine interval arithmetic
+7  All roots of nonlinear functions and global optimization
+8  ffl-numbers: k-bit point and interval arithmetic
+9  Utility routines
+a  Accurate standard functions
+b  The gradient toolbox (gradients of multivariate functions)
+c  The Hessian toolbox (Hessians of multivariate functions)
+d  The Taylor toolbox (taylor expansion of univariate functions)
+e  The slope toolbox (slope of multivariate functions
+f  The polynomial toolbox (univariate and multivariate polynomials
+g  The long number toolbox (a rudemantary implementation, originally for internal use)
+ 
+0  exit this wrapper
+ 
+</pre><pre class="codeoutput error">Error using input
+Cannot call INPUT from EVALC.
+Error in demointlab (line 37)
+    str = input('select demo ','s');</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function demointlab
+%DEMOINTLAB   Wrapper routine to call INTLAB demos
+%
+%A selection of INTLAB demos, call
+%
+%  demointlab
+%
+
+% written  10/13/12     S.M. Rump  
+% modified 11/07/12     S.M. Rump  INTLAB_larger added
+% modified 04/04/14     S.M. Rump  end function
+% modified 05/13/14     S.M. Rump  new demos
+% modified 01/21/15     S.M. Rump  error if no web available
+%
+
+  if ~exist('web','file')
+    error(['Command "web" not supported. ', ...
+           'To see INTLAB demo-files please display the corresponding ' ...
+           'html-files in directory demos/html directly by some browser.     '])
+  end    
+
+  d = which('demointlab');
+  wng = warning;
+  warning off
+  addpath([ d(1:end-13) '\html' ])
+  warning(wng)
+  
+  clc
+  disp('Welcome to INTLAB, the Matlab toolbox for reliable computing.')
+  disp(' ')
+  disp('The current version consists of more than 1200 .m-functions with more ')
+  disp('  than 46 thousand lines of Matlab-code (more than 80 KLOC with comments). ')
+  disp('The test suite for INTLAB consists of another 82 KLOC. ')
+  disp(' ')
+  while 1
+    displaycomments
+    str = input('select demo ','s');
+    switch lower(str)
+      case '1', web('dintlab.html');
+      case '2', web('dintlab_larger.html');
+      case '3', web('dintval.html');
+      case '4', web('darithmetic.html');
+      case '5', web('daccsumdot.html');
+      case '6', web('daffari.html');
+      case '7', web('dglobal.html');
+      case '8', web('dfl.html');
+      case '9', web('dutility.html');
+      case 'a', web('dstdfcts.html');
+      case 'b', web('dgradient.html');
+      case 'c', web('dhessian.html');
+      case 'd', web('dtaylor.html');
+      case 'e', web('dslope.html');
+      case 'f', web('dpolynom.html');
+      case 'g', web('dlong.html');
+      case '0', break;
+    end
+  end
+  
+  disp(' ')
+  disp('Enjoy INTLAB. Comments and suggestions always welcome to rump (at) tuhh.de .')
+  disp(' ')
+  
+end  % function demointlab
+
+  
+  
+function displaycomments
+  disp(' ')
+  disp('This is a wrapper routine to call several INTLAB demos, selected by numbers. ')
+  disp(' ')
+  disp('1  A general demo of some features of INTLAB')
+  disp('2  Some larger examples with INTLAB')
+  disp('3  Some examples of interval computations')
+  disp('4  Details about interval arithmetic')
+  disp('5  Accurate summation and dot products')
+  disp('6  Affine interval arithmetic')
+  disp('7  All roots of nonlinear functions and global optimization')
+  disp('8  ffl-numbers: k-bit point and interval arithmetic')
+  disp('9  Utility routines')
+  disp('a  Accurate standard functions')
+  disp('b  The gradient toolbox (gradients of multivariate functions)')
+  disp('c  The Hessian toolbox (Hessians of multivariate functions)')
+  disp('d  The Taylor toolbox (taylor expansion of univariate functions)')
+  disp('e  The slope toolbox (slope of multivariate functions')
+  disp('f  The polynomial toolbox (univariate and multivariate polynomials')
+  disp('g  The long number toolbox (a rudemantary implementation, originally for internal use)')
+  disp(' ')
+  disp('0  exit this wrapper')
+  disp(' ')
+end  % function displaycomments
+
+##### SOURCE END #####
+--></body></html>

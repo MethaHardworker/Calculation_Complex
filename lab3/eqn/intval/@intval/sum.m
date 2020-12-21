@@ -1,0 +1,70 @@
+function c = sum(a,dim)
+%SUM          Implements  sum(a,dim)  for intervals
+%
+%   c = sum(a,dim)
+%
+% parameter dim optional
+% functionality as Matlab function sum for matrices
+%
+
+% written  10/16/98     S.M. Rump
+% modified 09/02/00     S.M. Rump  rounding unchanged after use
+% modified 04/04/04     S.M. Rump  set round to nearest for safety
+% modified 04/06/05     S.M. Rump  rounding unchanged
+% modified 11/20/05     S.M. Rump  faster check for rounding to nearest
+% modified 07/30/16     S.M. Rump  rounding check by getround for Matlab 2016b 
+% modified 05/20/18     S.M. Rump  N-dim arrays (thanks to Florian Buenger)
+%
+
+  rndold = getround;
+  if rndold
+    setround(0)
+  end
+
+  c.complex = a.complex;
+
+  if a.complex
+    c.inf = [];
+    c.sup = [];
+    if nargin==1
+      setround(-1)
+      c1 = sum(a.mid);
+      setround(1)
+      c2 = sum(a.mid);
+      c.mid = c1 + 0.5*(c2-c1);
+      if isequal(a.rad,0)
+        c.rad = abs(c.mid-c1);
+      else
+        c.rad = abs(c.mid-c1) + sum(a.rad);
+      end
+    else
+      setround(-1)
+      c1 = sum(a.mid,dim);
+      setround(1)
+      c2 = sum(a.mid,dim);
+      c.mid = c1 + 0.5*(c2-c1);
+      if isequal(a.rad,0)
+        c.rad = abs(c.mid-c1);
+      else
+        c.rad = abs(c.mid-c1) + sum(a.rad,dim);
+      end
+    end
+  else
+    if nargin==1
+      setround(-1)
+      c.inf = sum(a.inf);
+      setround(1)
+      c.sup = sum(a.sup);
+    else
+      setround(-1)
+      c.inf = sum(a.inf,dim);
+      setround(1)
+      c.sup = sum(a.sup,dim);
+    end
+    c.mid = [];
+    c.rad = [];
+  end
+
+  c = class(c,'intval');
+
+  setround(rndold)                      % set rounding to previous value

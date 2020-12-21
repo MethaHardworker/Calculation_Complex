@@ -1,0 +1,1066 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DEMOGLOBAL  Global minima, constraint global minima and all roots</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-07-28"><meta name="DC.source" content="dglobal.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>DEMOGLOBAL  Global minima, constraint global minima and all roots</h1><!--introduction--><p>This is a short demonstration of INTLAB functions for global problems, in particular</p><div><ul><li>finding all roots of a multivariate nonlinear function in a box,</li></ul></div><div><ul><li>finding all global minima of a multivariate nonlinear function in a box or,</li></ul></div><div><ul><li>finding all global minima of a multivariate nonlinear function subject to additional constraints in a box.</li></ul></div><div><ul><li>finding all roots of the gradient of a function f:R^n-&gt;R in a box.</li></ul></div><div><ul><li>global multivariate parameter identification</li></ul></div><p>The algorithms are based on</p><p>S.M. Rump. Mathematically Rigorous Global Optimization in Floating-Point   Arithmetic. to appear in Optimization Methods &amp; Software, 2018.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Finding all roots of a univariate function within a box</a></li><li><a href="#4">Finding all roots of a bivariate function within a box</a></li><li><a href="#10">Finding all roots of a multivariate function within a box</a></li><li><a href="#14">Global minimum for univariate functions</a></li><li><a href="#16">Failure of Matlab for global minimum of univariate function</a></li><li><a href="#18">Global minima for multivariate functions</a></li><li><a href="#24">Griewank's n-dimensional test function</a></li><li><a href="#28">Global minima of a non-smooth function - The Half-Pipe</a></li><li><a href="#31">Infinite boxes</a></li><li><a href="#35">Roots on the boundary of a box</a></li><li><a href="#38">Minima on the boundary of a box</a></li><li><a href="#41">Minima on the boundary of a box for constraint minimization</a></li><li><a href="#46">Finding all roots of the gradient</a></li><li><a href="#48">Parameter identification</a></li><li><a href="#50">Parameter identification using the midpoint rule</a></li><li><a href="#51">Parameter identification using affine arithmetic</a></li><li><a href="#54">Zero areas of non-smooth functions</a></li><li><a href="#55">A 4-dimensional parameter identification problem with 2 parameters</a></li><li><a href="#59">Display of a cardiode</a></li><li><a href="#63">Enjoy INTLAB</a></li></ul></div><h2 id="1">Finding all roots of a univariate function within a box</h2><p>Given a function f:R^n-&gt;R^n, algorithm "verifynlssall" finds all roots of f within a given box X. Let's start with a univariate function</p><pre class="codeinput">format <span class="string">compact</span> <span class="string">long</span> <span class="string">_</span>
+close <span class="string">all</span>
+setround(0)                           <span class="comment">% set rounding to nearest</span>
+
+f = @(x)(sin(x)+cos(x/2)+x/5)
+x = linspace(-20,15);
+plot(x,f(x),x,0*x)
+title(<span class="string">'sin(x)+cos(x/2)+x/5  in  [-20,15]'</span>)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)(sin(x)+cos(x/2)+x/5)
+</pre><img vspace="5" hspace="5" src="dglobal_01.png" alt=""> <p>The graph suggests that f has three real roots near -1, 4 and 6, respectively. All real roots of f can be included as follows:</p><pre class="codeinput">tic
+X = infsup(-inf,inf);
+[L,Ls] = verifynlssall(f,X)
+toc
+</pre><pre class="codeoutput">intval L = 
+  -0.84041617394821   3.64287443341707   6.06278265338672
+Ls =
+     []
+Elapsed time is 0.109316 seconds.
+</pre><p>Here the columns of L are inclusions of roots of f, whereas Ls collects possible additional candidates. For example, multiple roots of f or roots on the boundary of X are collected in Ls. Since Ls is empty, it is proved that f has exactly three simple real roots.</p><h2 id="4">Finding all roots of a bivariate function within a box</h2><p>As a example consider Broyden's function</p><pre class="codeinput">f = @(x)([ .5*sin(x(1)*x(2)) - x(2)/(4*pi) - x(1)/2 ; <span class="keyword">...</span>
+     (1-1/(4*pi))*(exp(2*x(1))-exp(1)) + exp(1)*x(2)/pi - 2*exp(1)*x(1) ])
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)([.5*sin(x(1)*x(2))-x(2)/(4*pi)-x(1)/2;(1-1/(4*pi))*(exp(2*x(1))-exp(1))+exp(1)*x(2)/pi-2*exp(1)*x(1)])
+</pre><p>in the interval [-10,10]^2. We compute</p><pre class="codeinput">X = repmat(infsup(-10,10),2,1);
+tic
+[L,Ls] = verifynlssall(f,X)
+toc
+</pre><pre class="codeoutput">intval L = 
+  Columns 1 through 6
+  -0.26059929002247   0.29944869249092   0.50000000000000   1.29436045992063   1.33742561198926   1.43394932993074
+   0.62253089661391   2.83692777045894   3.14159265358979  -3.13721979119291  -4.14043864682795  -6.82076526634101
+  Column 7
+   1.48131956813112
+  -8.38361268561959
+Ls =
+     []
+Elapsed time is 0.285436 seconds.
+</pre><p>In the literature, the root [0.5;pi] is mentioned, however, there are other roots. But these are, in fact, not necessarily roots of the original function because only an approximation for pi and exp(1) is used. However, inserting intervals for those quantities does not allow for a real Newton iteration. The remedy to this is to adapt the types of the parameters cpi and c1 to the type of the input x:</p><pre class="language-matlab"><span class="keyword">function</span> y = Broyden(x)
+  y = x;
+  c1 = typeadj( 1 , typeof(x) );
+  cpi = typeadj( midrad(3.14159265358979323,1e-16) , typeof(x) );
+  y(1,:) = .5*sin(x(1,:).*x(2,:)) - x(2,:)/(4*cpi) - x(1,:)/2;
+  y(2,:) = (1-1/(4*cpi))*(exp(2*x(1,:))-exp(c1)) + <span class="keyword">...</span>
+            exp(c1)*x(2,:)/cpi - 2*exp(c1)*x(1,:);
+</pre><p>Then the verified result for the original function is</p><pre class="codeinput">[L1,Ls1] = verifynlssall(@Broyden,X)
+</pre><pre class="codeoutput">intval L1 = 
+  Columns 1 through 6
+  -0.26059929002247   0.29944869249092   0.50000000000000   1.29436045992063   1.33742561198926   1.43394932993074
+   0.62253089661391   2.83692777045894   3.14159265358979  -3.13721979119291  -4.14043864682795  -6.82076526634101
+  Column 7
+   1.48131956813112
+  -8.38361268561959
+Ls1 =
+     []
+</pre><p>However, barely a difference is seen. When comparing the diameters, the difference becomes visible:</p><pre class="codeinput">format <span class="string">short</span>
+diam(L1) - diam(L)
+format <span class="string">long</span>
+</pre><pre class="codeoutput">ans =
+   1.0e-14 *
+    0.0666    0.0333    0.0888    0.0444    0.0444    0.0444    0.0444
+    0.0444    0.4441    0.3553         0    0.1776    0.1776    0.3553
+</pre><p>Note that these are inclusions; however, they are so accurate that using the "_"-notation all figures shown are verified to be correct.</p><p>Also note that the function f is parallelized such that   [ f(x1) f(x2) ] and   f([x1 x2])  are identical. For explicitly given functions that is done automatically; functions given as a program have to be specified that way. For details, see "funvec".</p><h2 id="10">Finding all roots of a multivariate function within a box</h2><p>Consider the famous Brown's almost linear function</p><pre class="language-matlab"><span class="keyword">function</span> y = Brown(x)
+  y = x;
+  n = size(x,1);
+  <span class="keyword">for</span> k=1:n-1
+    y(k,:) = x(k,:) + sum(x,1) - (n+1);
+  <span class="keyword">end</span>
+  y(n,:) = prod(x,1) - 1;
+</pre><p>Roots of the function are (a,a,...,a,a^(1-n)) where a are the roots of h(x) = n*x^n - (n+1)*x^(n-1) + 1.</p><p>First compute all roots of Brown's function for n=5. The dimension is simply given by the dimension of the input box.</p><pre class="codeinput">n = 5;
+X = repmat(infsup(-100,100),n,1);
+[L,Ls,Data] = verifynlssall(@Brown,X,verifynlssallset(<span class="string">'iFunMax'</span>,1e6));
+L
+size(Ls)
+</pre><pre class="codeoutput">intval L = 
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+   8.89521544247058   1.4182270873308_   1.0000000000000_
+ans =
+           5        7468
+</pre><p>The box X is rather large, thus, with the default parameters, many boxes remain on the list ListS. However, all data is stored in the output variable Data, thus the search can be repeated:</p><pre class="codeinput">[L,Ls] = verifynlssall(Data)
+</pre><pre class="codeoutput">intval L = 
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+  -0.57904308849412   0.91635458253385   1.00000000000000
+   8.89521544247058   1.4182270873308_   1.0000000000000_
+Ls =
+     []
+</pre><p>Now Ls is empty and it has been proved that Brown's function for n=5 has 3 roots in [-100,100]^n. The roots of Brown's function are known to be (r,r,...,r,r^(1-n)) for r being the roots of P(x) = n*x^n - (n+1)*x^(n-1) + 1.</p><p>For n=5 the roots of P are obviously in the complex disc with radius 2n+2. Thus all real roots of P are computed by</p><pre class="codeinput">P = @(x,n)( n*x^n - (n+1)*x^(n-1) + 1 );
+[R,Rs] = verifynlssall(P,midrad(0,2*n+2),[],n)
+</pre><pre class="codeoutput">intval R = 
+  -0.57904308849411   0.91635458253385   1.00000000000000
+Rs =
+     []
+</pre><p>That verifies the above result. Note that the parameter n is passed to the polynomial P.</p><h2 id="14">Global minimum for univariate functions</h2><p>Similar to finding all roots of a nonlinear system, an inclusion of the global minimum of a function f:R^n-&gt;R can be computed. Consider</p><pre class="codeinput">f = @(x) sin(x.^2)+(x-1).^2/10
+ezplot(f)
+[mu,L,Ls] = verifyglobalmin(f,infsup(-10,10))
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)sin(x.^2)+(x-1).^2/10
+intval mu = 
+  -0.86436953024141
+intval L = 
+   2.15840074621302
+Ls =
+     []
+</pre><img vspace="5" hspace="5" src="dglobal_02.png" alt=""> <p>Here the list L of minima consists of one box, and the list Ls of potential minima is empty. Thus the global minimum of f in [-10,10] is enclosed in L with global minimum in mu.</p><h2 id="16">Failure of Matlab for global minimum of univariate function</h2><p>The Matlab routine fminbnd tries to compute the global minimum of a univariate function, but sometimes fails for simple examples. Consider</p><pre class="codeinput">f = @(x)cos(x.^2-5)+atan(x)
+close
+x = linspace(1,4,1e5);
+plot(x,f(x),x,0*x)
+title(<span class="string">'cos(x^2-5)+atan(x)  in  [1,4]'</span>)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)cos(x.^2-5)+atan(x)
+</pre><img vspace="5" hspace="5" src="dglobal_03.png" alt=""> <p>Obviously the global minimum on [1,4] is near x=1.3 as computed by our verification algorithm, however, Matlab's fminbnd fails by picking a local minimum:</p><pre class="codeinput">[mu,L,Ls] = verifyglobalmin(f,infsup(1,4))
+Y = fminbnd(f,1,4)
+</pre><pre class="codeoutput">intval mu = 
+  -0.07109205522357
+intval L = 
+   1.31055395864451
+Ls =
+     []
+Y =
+   2.849972728820330
+</pre><h2 id="18">Global minima for multivariate functions</h2><p>Consider Griewank's function, a famous test function in global optimization</p><pre class="codeinput">close
+f = funvec(@(x)( 1 + sum(x.^2)/4000 - cos(x(1))*cos(x(2)/sqrt(2)) ),zeros(2,1))
+[x,y] = meshgrid(-600:10:600,-600:10:600);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(3)
+title(<span class="string">'Griewank''s function in [-600,600]^2 on a coarse grid'</span>)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)(1+sum(x.^2)./4000-cos(x(1,:)).*cos(x(2,:)./sqrt(2)))
+</pre><img vspace="5" hspace="5" src="dglobal_04.png" alt=""> <p>The function on its originally given domain X := [-600,600]^2 looks rather innocent, however a little zooming decovers the nature of the function. Note Griewank's function has more than 200,000 local extrema in X.</p><pre class="codeinput">close
+[x,y] = meshgrid(-100:100,-100:100);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(3)
+title(<span class="string">'Griewank''s function in [-100,100]^2 on a finer grid'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_05.png" alt=""> <p>The global minimum of Griewank's function is zero with function value zero. It can be verified as follows</p><pre class="codeinput">format <span class="string">infsup</span>
+tic
+X = repmat(infsup(-600,600),2,1);
+[mu,L,Ls] = verifyglobalmin(@Griewank,X)
+toc
+</pre><pre class="codeoutput">intval mu = 
+[   0.00000000000000,   0.00000000000000] 
+L =
+     []
+intval Ls = 
+[  -2.27193642976272,   0.03031955200620] 
+[  -2.27193642976272,   0.03031955200620] 
+Elapsed time is 0.104785 seconds.
+</pre><img vspace="5" hspace="5" src="dglobal_06.png" alt=""> <p>Next we display the search boxes of the algorithm.</p><pre class="codeinput">verifyglobalmin(@Griewank,X,verifyoptimset(<span class="string">'Display'</span>,<span class="string">'~'</span>));
+title(<span class="string">'Search boxes for the 2-dimensional Griewank function'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_07.png" alt=""> <img vspace="5" hspace="5" src="dglobal_08.png" alt=""> <p>Wide boxes far from the global minimum zero are quickly discarded, whereas more bisections are necessary near the global minimum. Zooming into the plot by a factor 5000 shows that granularity of the graph:</p><pre class="codeinput">zoom(100)
+title(<span class="string">'Zoom into search boxes for the 2-dimensional Griewank function'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_09.png" alt=""> <p>It also becomes clear that we choose a midpoint slightly off the true midpoint. That proves to be efficient because in benchmark examples such as Griewank's function the true global minimum of often on the boundary of bisected intervals. That, however, is unlikely in real-life problems. That lead to the different choice of the midpoint, see</p><p>S.M. Rump. Mathematically Rigorous Global Optimization in Floating-Point   Arithmetic. to appear in Optimization Methods &amp; Software, 2018.</p><h2 id="24">Griewank's n-dimensional test function</h2><p>Griewank's test function is in fact n-dimensional; it is defined as follows:</p><pre class="language-matlab">n = size(x,1);
+y = 1 + sum(x.^2,1)/4000;
+p = 1;
+<span class="keyword">for</span> i=1:n
+  p = p .* cos(x(i,:)/sqrt(i));
+<span class="keyword">end</span>
+y = y - p;
+</pre><p>The constraint box is [-600,600]^n, and again the global minimum is the origin. For n=10 the global minimum with a maximum relative tolerance of 1e-5 for the inclusion box is computed as follows:</p><pre class="codeinput">format <span class="string">infsup</span> <span class="string">long</span> <span class="string">e</span>
+tic
+X = repmat(infsup(-600,600),10,1);
+[mu,L,Ls] = verifyglobalmin(@Griewank,X,verifyoptimset(<span class="string">'TolXrel'</span>,1e-5))
+toc
+</pre><pre class="codeoutput">intval mu = 
+[  0.000000000000000e+000,  0.000000000000000e+000] 
+intval L = 
+[ -1.847877119492637e-035,  6.882142696441376e-022] 
+[ -1.979532486784733e-035,  8.337980574534719e-022] 
+[ -2.162909605513010e-035,  9.396771758602613e-022] 
+[ -1.692711865184095e-035,  9.926167350636503e-022] 
+[ -1.805559322863034e-035,  1.005851624864500e-021] 
+[ -1.570460452698577e-035,  1.005851624864499e-021] 
+[ -1.683307910377516e-035,  1.032321404466197e-021] 
+[ -1.325957627727541e-035,  1.058791184067889e-021] 
+[ -1.222514124855180e-035,  1.085260963669585e-021] 
+[ -1.194302260435445e-035,  1.005851624864494e-021] 
+Ls =
+     []
+Elapsed time is 1.624330 seconds.
+</pre><p>Note that the number of local extrema grows exponentially with the dimension. For n=10 there are about 10^29 local extrema in X.</p><h2 id="28">Global minima of a non-smooth function - The Half-Pipe</h2><p>Consider the half-pipe, a famous test function in non-smooth optimization:</p><pre class="codeinput">f = @(x) max( x(2,:).^2 - max(x(1,:),0) , 0 )
+close
+[x,y] = meshgrid(-1:.025:1,-1:.025:1);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(52,26)
+title(<span class="string">'The halp-pipe in [-1,1]^2'</span>)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)max(x(2,:).^2-max(x(1,:),0),0)
+</pre><img vspace="5" hspace="5" src="dglobal_10.png" alt=""> <p>The global minimum of the half-pipe is zero and admitted for   all (x,0) with x &lt;= 0    and    all (x,y) with 0 &lt;= x &lt;= y^2. Sharp bounds (in fact, the true minimum zero) for the global minimum are computed as well a list of possible minimizers:</p><pre class="codeinput">[mu,L,Ls,data] = verifyglobalmin(f,infsup(-100,100)*ones(2,1),verifyoptimset(<span class="string">'TolXabs'</span>,0.5));
+mu
+infsup(mu)
+L
+size(Ls)
+close
+plotintval(Ls)
+title(<span class="string">'Inclusion of global minima of the half-pipe'</span>)
+</pre><pre class="codeoutput">intval mu = 
+[  0.000000000000000e+000,  0.000000000000000e+000] 
+intval mu = 
+[  0.000000000000000e+000,  0.000000000000000e+000] 
+L =
+     []
+ans =
+           2        2403
+</pre><img vspace="5" hspace="5" src="dglobal_11.png" alt=""> <p>By the principle of verification methods it is not possible to verify a minimizer because that is an ill-posed problem. Therefore, the list L of verified global minima must be empty. The list Ls of potential minimizers can be refined as usual:</p><pre class="codeinput">[mu,L,Ls,data] = verifyglobalmin(data);
+mu
+size(Ls)
+close
+plotintval(Ls)
+title(<span class="string">'Improved inclusion of global minima of the half-pipe'</span>)
+</pre><pre class="codeoutput">intval mu = 
+[  0.000000000000000e+000,  0.000000000000000e+000] 
+ans =
+           2       35131
+</pre><img vspace="5" hspace="5" src="dglobal_12.png" alt=""> <h2 id="31">Infinite boxes</h2><p>As has been seen in some example above, in principle a box constraint may consist of infinite intervals. However, this is not working in general. Consider</p><pre class="codeinput">f = @(x)(x^3-x)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)(x^3-x)
+</pre><p>Obviously that function has the three simple roots -1, 0 and 1. Thus one may expect no problems when computing all roots in some box, say [-10,10]:</p><pre class="codeinput">format <span class="string">long</span> <span class="string">_</span>
+X = infsup(-10,10);
+[L,Ls] = verifynlssall(f,X)
+</pre><pre class="codeoutput">intval L = 
+  -1.00000000000000   0.00000000000000   1.00000000000000
+Ls =
+     []
+</pre><p>Indeed that is an easy task. However, specifying the real axis for X results in</p><pre class="codeinput">format <span class="string">long</span> <span class="string">e</span> <span class="string">infsup</span>
+X = infsup(-inf,inf);
+[L,Ls] = verifynlssall(f,X);
+L = L'
+Ls = Ls'
+</pre><pre class="codeoutput">intval L = 
+[ -1.000000000000001e+000, -9.999999999999998e-001] 
+[  9.999999999999998e-001,  1.000000000000001e+000] 
+[ -2.220446049250314e-036,  2.220446049250314e-036] 
+intval Ls = 
+[                   - Inf, -8.627484236379337e+155] 
+[  8.627484236379337e+155,                     Inf] 
+</pre><p>Now inclusions of the roots -1, 0 and 1 are computed as before, however, two infinite boxes covering the negative and positive infinite range remain. The reason is that f(Y)=[-inf,inf] for any real r and Y=[-inf,r] or [r,inf]. Knowing only the function handle of f, there is no better answer.</p><h2 id="35">Roots on the boundary of a box</h2><p>As a principle of verification methods, roots on the boundary of a constraint box cannot be included. Except special cases, an inclusion of a root is always an interval with nonempty diameter. Thus, it cannot be decided whether the true root is within the box constraint or not. Consider</p><pre class="codeinput">format <span class="string">long</span>
+f = @(x)(x^2 - 4)
+[L,Ls] = verifynlssall(f,infsup(-2,2))
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)(x^2-4)
+L =
+     []
+intval Ls = 
+[  -2.00000000000000,  -1.99999999928283] [   1.99999999919033,   2.00000000000000] 
+</pre><p>The situation changes if the box is widened, for example</p><pre class="codeinput">X = infsup(-2,succ(2));
+[L,Ls] = verifynlssall(f,X)
+</pre><pre class="codeoutput">intval L = 
+[   1.99999999999999,   2.00000000000001] 
+intval Ls = 
+[  -2.00000000000000,  -1.99999999928283] 
+</pre><p>The root -2 is still on the boundary, but the root +2 is in the inner of the input box X. Thus an inclusion of +2 is on the new list L, the boundary root -2 still on Ls. With a little more widening of X, the list L contains both -2 and +2, whereas Ls is empty.</p><h2 id="38">Minima on the boundary of a box</h2><p>Consider minimizing f(x)=(x-1)^2 on X=[-1,1]. We reformulate the function to make sure that rounding error occur, even when evaluating f(1):</p><pre class="codeinput">f = @(x) sum(x/3.*(3*x-6)+1,1)
+X = infsup(-1,1)*ones(2,1)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)sum(x/3.*(3*x-6)+1,1)
+intval X = 
+[  -1.00000000000000,   1.00000000000000] 
+[  -1.00000000000000,   1.00000000000000] 
+</pre><p>Obviously the global minimum is x = [ 1 ; 1 ], which is on the boundary of X. The global minimum is found by</p><pre class="codeinput">[mu,L,Ls] = verifyglobalmin(f,X)
+</pre><pre class="codeoutput">intval mu = 
+  1.0e-004 *
+[  -0.43420199632105,   0.00000000000223] 
+L =
+     []
+intval Ls = 
+  Columns 1 through 2
+[   0.99999972654444,   1.00000000000000] [   0.99997894792580,   0.99997894792581] 
+[   0.99999943598830,   1.00000000000000] [   0.99995657935717,   1.00000000000000] 
+  Columns 3 through 4
+[   0.99999505128801,   0.99999505128802] [   0.99999883670606,   0.99999883670607] 
+[   0.99998979310763,   1.00000000000000] [   0.99999760066537,   1.00000000000000] 
+  Column 5
+[   0.99999972654444,   0.99999972654445] 
+[   0.99999943598830,   1.00000000000000] 
+</pre><p>The list L is empty because the minimum x=1 is on the boundary of X and, by principle of verification methods, it cannot be verified that f'(x) has a root in X. The inclusion mu of the minimum is narrow.</p><h2 id="41">Minima on the boundary of a box for constraint minimization</h2><p>Consider minimizing f(x) for g(x)=0 on X for</p><pre class="codeinput">f = @(x)(x)
+g = @(x)(cos(2*atan(x)))
+X = infsup(-1,1)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)(x)
+g =
+  function_handle with value:
+    @(x)(cos(2*atan(x)))
+intval X = 
+[  -1.00000000000000,   1.00000000000000] 
+</pre><p>Since 4*atan(1)=pi, there are exactly two feasible points -1 and 1, both on the boundary of X. Thus, the minimum value of the trivial function f is -1. However,</p><pre class="codeinput">[mu,L,Ls] = verifyconstraintglobalmin(f,g,X)
+</pre><pre class="codeoutput">intval mu = 
+[  -1.00000000000000,                Inf] 
+L =
+     []
+intval Ls = 
+[  -1.00000000000000,  -0.98740435249846] [   0.98577975420887,   1.00000000000000] 
+</pre><p>According to the specification of verifyconstraintglobalmin, each box in the list L consists of a local minimum of f, on Ls are possible inclusions. Thus the wide inclusion mu of the minimum value is true, but with the upper bound inf it seems very week.</p><p>However, given the information at hand, that is the best possible information we can obtain. Since -1 and 1 are on the boundary of X, it can not be verified whether the feasible region is empty of not. Thus the minimum of f(X), without constraint, is the best information about the minimum of f s.t. g(x)=0.</p><p>However, no better upper bound than +inf for the minimum is possible. That is because if the feasible region were empty, convention says that the minimum is +inf, and that is the upper bound of mu.</p><p>Widening the box on the right allows at least to verify existence of a feasible point</p><pre class="codeinput">format <span class="string">infsup</span>
+X = infsup(-1,succ(1,2));
+[mu1,L1,Ls1] = verifyconstraintglobalmin(f,g,X)
+</pre><pre class="codeoutput">intval mu1 = 
+[  -1.00000000000000,   1.00000000000001] 
+intval L1 = 
+[   0.99999999999999,   1.00000000000001] 
+intval Ls1 = 
+[  -1.00000000000000,  -0.99999988256466] 
+</pre><p>This reduces mu to about [-1,1]. Since -1 is still on the boundary, it cannot be verified to be feasible. Finally, widening the box X on both sides moves both feasible points to the interior and the result is as anticipated.</p><pre class="codeinput">e = 1e-14;
+X = infsup(-1-e,1+e);
+[mu2,L2,Ls2] = verifyconstraintglobalmin(f,g,X)
+</pre><pre class="codeoutput">intval mu2 = 
+[  -1.00000000000002,  -0.99999999999999] 
+intval L2 = 
+[  -1.00000000000001,  -0.99999999999999] 
+Ls2 =
+     []
+</pre><h2 id="46">Finding all roots of the gradient</h2><p>For a given function f:R^n-&gt;R all roots of the gradient within a box X can be computed, i.e., all stationary points. Consider</p><pre class="codeinput">format <span class="string">short</span>
+n = 3;
+X = infsup(-10,10)*ones(n,1);
+tic
+[L,Ls] = verifynlssderivall(@Griewank,X,verifynlssallset(<span class="string">'iFunMax'</span>,1e6));
+tDerivall = toc
+size(L)
+size(Ls)
+</pre><pre class="codeoutput">tDerivall =
+    2.6076
+ans =
+     3   265
+ans =
+     0     0
+</pre><p>That means there are 265 stationary points of the Griewank function within the box [-10,10]^3. Another way to produce that result is to compute explicitly given gradient of the Griewank function in some function Griewanks:</p><pre class="codeinput">tic
+[L1,Ls1] = verifynlssall(@Griewanks,X,verifynlssallset(<span class="string">'iFunMax'</span>,1e6));
+tnlssall = toc
+size(L1)
+size(Ls1)
+</pre><pre class="codeoutput">tnlssall =
+    3.0710
+ans =
+     3   265
+ans =
+     0     0
+</pre><h2 id="48">Parameter identification</h2><p>Let a function f and a box X be given. Parameter identification means to find for a given interval P all x in X with the property that f(x) is in P. The interval P may be a point.</p><p>As an example, consider to find the zero set of</p><pre class="language-matlab">f = -(5*y - 20*y^3 + 16*y^5)^6 + (-(5*x - 20*x^3 + 16*x^5)^3 + 5*y - 20*y^3 + 16*y^5)^2
+</pre><p>on the box  X = infsup(-1,1)^2:</p><pre class="codeinput">f = @(x) -(5*x(2) - 20*x(2)^3 + 16*x(2)^5)^6 + (-(5*x(1) - 20*x(1)^3 + 16*x(1)^5)^3 + 5*x(2) - 20*x(2)^3 + 16*x(2)^5)^2;
+X = infsup(-1,1)*ones(2,1);
+format <span class="string">short</span>
+tic
+verifynlssparam(f,0,X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>));
+tIntval = toc
+title(<span class="string">'Parameter identification - default setting'</span>)
+</pre><pre class="codeoutput">tIntval =
+    0.4736
+</pre><img vspace="5" hspace="5" src="dglobal_13.png" alt=""> <p>As a principal limit, it cannot be verified that the value of a function is truly zero. However, certain areas can be excluded, and in the graph these are the white areas. The black area are potential members of the zero set.</p><h2 id="50">Parameter identification using the midpoint rule</h2><p>Due to overestimation by interval arithmetic, the black area is quite big. That can be improved by using the midpoint rule with moderately increasing computing time.</p><pre class="codeinput">tic
+verifynlssparam(f,0,X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>,<span class="string">'Method'</span>,<span class="string">'midrule'</span>));
+tMidrule = toc
+title(<span class="string">'Parameter identification using midpoint rule'</span>)
+</pre><pre class="codeoutput">tMidrule =
+    1.1992
+</pre><img vspace="5" hspace="5" src="dglobal_14.png" alt=""> <h2 id="51">Parameter identification using affine arithmetic</h2><p>The picture will be further improved by using affine arithmetic.</p><pre class="codeinput">tic
+verifynlssparam(f,0,X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>,<span class="string">'Method'</span>,<span class="string">'affari'</span>));
+tAffari = toc
+title(<span class="string">'Parameter identification using affine arithmetic'</span>)
+</pre><pre class="codeoutput">tAffari =
+    8.0923
+</pre><img vspace="5" hspace="5" src="dglobal_15.png" alt=""> <p>However, the improvement comes with significantly increased computing time.</p><p>When widening P, for example displaying all x in X such that abs(f(x))&lt;=0.2, also red areas appear. That covers points definitely satisfying the desired property.</p><pre class="codeinput">verifynlssparam(f,infsup(-0.2,0.2),X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>,<span class="string">'Method'</span>,<span class="string">'affari'</span>));
+title(<span class="string">'Parameter identification |f(x)|&lt;=2'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_16.png" alt=""> <p>A typical cut section looks as follows, where only the yellow areas are undecided.</p><pre class="codeinput">axis([-0.4 0.4 -0.4 0.4])
+title(<span class="string">'Zoom into parameter identification |f(x)|&lt;=2'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_17.png" alt=""> <h2 id="54">Zero areas of non-smooth functions</h2><p>Consider again the half-pipe, a famous test function in non-smooth optimization. As has been mentioned, the half-pipe is entirely zero for   all (x,0) with x &lt;= 0    and    all (x,y) with 0 &lt;= x &lt;= y^2. Now the zero regions are not only one-dimensional, so that red areas appear although testing for f(x)=0:</p><pre class="codeinput">f = @(x) max( x(2,:).^2 - max(x(1,:),0) , 0 )
+X = infsup(-5,5)*ones(2,1)
+verifynlssparam(f,0,X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>));
+title(<span class="string">'Zero set of the half-pipe'</span>)
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)max(x(2,:).^2-max(x(1,:),0),0)
+intval X = 
+[   -5.0000,    5.0000] 
+[   -5.0000,    5.0000] 
+</pre><img vspace="5" hspace="5" src="dglobal_18.png" alt=""> <h2 id="55">A 4-dimensional parameter identification problem with 2 parameters</h2><p>Finally we show a parameter identification we found in the literature:</p><pre class="codeinput">f = @(p) [ p(1,:).*exp(0.2*p(2,:)) ;
+           p(1,:).*exp(p(2,:)) ;
+           p(1,:).*exp(2*p(2,:)) ;
+           p(1,:).*exp(4*p(2,:)) ]
+X = infsup(-3,3)*ones(2,1);
+P = infsup([1.5 .7 .1 -.1]',[2 .8 .3 .03]')
+tic
+verifynlssparam(f,P,X,verifynlssparamset(<span class="string">'Display'</span>,<span class="string">'~'</span>));
+toc
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(p)[p(1,:).*exp(0.2*p(2,:));p(1,:).*exp(p(2,:));p(1,:).*exp(2*p(2,:));p(1,:).*exp(4*p(2,:))]
+intval P = 
+[    1.5000,    2.0000] 
+[    0.6999,    0.8001] 
+[    0.1000,    0.3000] 
+[   -0.1001,    0.0300] 
+Elapsed time is 0.533337 seconds.
+</pre><img vspace="5" hspace="5" src="dglobal_19.png" alt=""> <p>A zoom into the feasible parameter set is as follows:</p><pre class="codeinput">axis([1.9 2.7 -1.4 -1])
+</pre><img vspace="5" hspace="5" src="dglobal_20.png" alt=""> <p>and a further zoom into the upper left corner is as follows:</p><pre class="codeinput">axis([1.998 2.005 -1.055 -1.048])
+</pre><img vspace="5" hspace="5" src="dglobal_21.png" alt=""> <p>In this case the picture does not change much when using the midrule or affine arithmetic.</p><h2 id="59">Display of a cardiode</h2><p>To display a cardiode we use the definition</p><pre class="codeinput">c = @(x) sqr(sum(sqr(x),1))+4*x(1,:).*sum(sqr(x),1)-4*sqr(x(2,:))
+</pre><pre class="codeoutput">c =
+  function_handle with value:
+    @(x)sqr(sum(sqr(x),1))+4*x(1,:).*sum(sqr(x),1)-4*sqr(x(2,:))
+</pre><p>Then it is straightforward to display the graph, that is the zero set of c(x).</p><pre class="codeinput">verifynlssparam(c,0,[infsup(-5,1);infsup(-3,3)],verifynlssparamset(<span class="string">'display'</span>,<span class="string">'~'</span>));
+title(<span class="string">'The cardiode'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_22.png" alt=""> <p>For a nicer heart curve, consider</p><pre class="codeinput">f = @(x)sqr(x(1,:))+2*sqr(0.6*x(1,:).^(2/3)-x(2,:))-1
+</pre><pre class="codeoutput">f =
+  function_handle with value:
+    @(x)sqr(x(1,:))+2*sqr(0.6*x(1,:).^(2/3)-x(2,:))-1
+</pre><p>Then the set of values with absolute value less than or equal to 0.1 looks as follows.</p><pre class="codeinput">verifynlssparam(f,midrad(0,.1),midrad(0,1.2)*ones(2,1),verifynlssparamset(<span class="string">'display'</span>,<span class="string">'~'</span>));
+title(<span class="string">'The heart'</span>)
+</pre><img vspace="5" hspace="5" src="dglobal_23.png" alt=""> <h2 id="63">Enjoy INTLAB</h2><p>INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing, Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% DEMOGLOBAL  Global minima, constraint global minima and all roots
+% This is a short demonstration of INTLAB functions for global problems, in
+% particular
+%
+% * finding all roots of a multivariate nonlinear function in a box,
+%
+% * finding all global minima of a multivariate nonlinear function in a box or, 
+%
+% * finding all global minima of a multivariate nonlinear function subject to
+% additional constraints in a box.
+%
+% * finding all roots of the gradient of a function f:R^n->R in a box.
+%
+% * global multivariate parameter identification
+%
+% The algorithms are based on
+%
+% S.M. Rump. Mathematically Rigorous Global Optimization in Floating-Point 
+%   Arithmetic. to appear in Optimization Methods & Software, 2018.
+%
+
+%% Finding all roots of a univariate function within a box
+% Given a function f:R^n->R^n, algorithm "verifynlssall" finds all roots
+% of f within a given box X. Let's start with a univariate function
+
+format compact long _
+close all
+setround(0)                           % set rounding to nearest    
+    
+f = @(x)(sin(x)+cos(x/2)+x/5)
+x = linspace(-20,15);
+plot(x,f(x),x,0*x)
+title('sin(x)+cos(x/2)+x/5  in  [-20,15]')
+        
+%%
+% The graph suggests that f has three real roots near -1, 4 and 6,
+% respectively. All real roots of f can be included as follows:
+
+tic
+X = infsup(-inf,inf);
+[L,Ls] = verifynlssall(f,X)
+toc
+
+%%
+% Here the columns of L are inclusions of roots of f, whereas Ls collects
+% possible additional candidates. For example, multiple roots of f or roots
+% on the boundary of X are collected in Ls. Since Ls is empty, it is proved
+% that f has exactly three simple real roots.
+
+%% Finding all roots of a bivariate function within a box
+% As a example consider Broyden's function
+
+f = @(x)([ .5*sin(x(1)*x(2)) - x(2)/(4*pi) - x(1)/2 ; ...
+     (1-1/(4*pi))*(exp(2*x(1))-exp(1)) + exp(1)*x(2)/pi - 2*exp(1)*x(1) ])
+
+%%        
+% in the interval [-10,10]^2. We compute
+
+X = repmat(infsup(-10,10),2,1);
+tic
+[L,Ls] = verifynlssall(f,X)
+toc
+
+%%
+% In the literature, the root [0.5;pi] is mentioned, however, there are
+% other roots. But these are, in fact, not necessarily roots of the 
+% original function because
+% only an approximation for pi and exp(1) is used. However, inserting
+% intervals for those quantities does not allow for a real Newton
+% iteration. The remedy to this is to adapt the types of the parameters cpi
+% and c1 to the type of the input x:
+%
+
+%%%
+%   function y = Broyden(x)
+%     y = x;
+%     c1 = typeadj( 1 , typeof(x) );
+%     cpi = typeadj( midrad(3.14159265358979323,1e-16) , typeof(x) );
+%     y(1,:) = .5*sin(x(1,:).*x(2,:)) - x(2,:)/(4*cpi) - x(1,:)/2;
+%     y(2,:) = (1-1/(4*cpi))*(exp(2*x(1,:))-exp(c1)) + ...
+%               exp(c1)*x(2,:)/cpi - 2*exp(c1)*x(1,:);
+% 
+% Then the verified result for the original function is
+
+[L1,Ls1] = verifynlssall(@Broyden,X)
+
+%%
+% However, barely a difference is seen. When comparing the diameters, the
+% difference becomes visible:
+
+format short
+diam(L1) - diam(L)
+format long
+
+%%
+% Note that these are inclusions; however, they are so accurate that using
+% the "_"-notation all figures shown are verified to be correct.
+%
+% Also note that the function f is parallelized such that   [ f(x1) f(x2) ]
+% and   f([x1 x2])  are identical. For explicitly given functions that is
+% done automatically; functions given as a program have to be specified
+% that way. For details, see "funvec".
+
+%% Finding all roots of a multivariate function within a box
+% Consider the famous Brown's almost linear function
+%
+%   function y = Brown(x)
+%     y = x;
+%     n = size(x,1);
+%     for k=1:n-1
+%       y(k,:) = x(k,:) + sum(x,1) - (n+1);
+%     end
+%     y(n,:) = prod(x,1) - 1;
+% 
+% Roots of the function are (a,a,...,a,a^(1-n)) where a are the roots of
+% h(x) = n*x^n - (n+1)*x^(n-1) + 1.
+%
+% First compute all roots of Brown's function for n=5. The dimension is
+% simply given by the dimension of the input box.
+
+n = 5;
+X = repmat(infsup(-100,100),n,1);
+[L,Ls,Data] = verifynlssall(@Brown,X,verifynlssallset('iFunMax',1e6));
+L
+size(Ls)
+  
+%%
+% The box X is rather large, thus, with the default parameters, many boxes
+% remain on the list ListS. However, all data is stored in the output
+% variable Data, thus the search can be repeated:
+
+[L,Ls] = verifynlssall(Data)
+
+%%
+% Now Ls is empty and it has been proved that Brown's function for n=5 
+% has 3 roots in [-100,100]^n. The
+% roots of Brown's function are known to be (r,r,...,r,r^(1-n)) for r being
+% the roots of P(x) = n*x^n - (n+1)*x^(n-1) + 1. 
+%
+% For n=5 the roots of P are obviously in the complex disc with radius
+% 2n+2. Thus all real roots of P are computed by
+
+P = @(x,n)( n*x^n - (n+1)*x^(n-1) + 1 );
+[R,Rs] = verifynlssall(P,midrad(0,2*n+2),[],n)
+
+%%
+% That verifies the above result. Note that the parameter n is passed to
+% the polynomial P.
+
+
+%% Global minimum for univariate functions
+% Similar to finding all roots of a nonlinear system, an inclusion of 
+% the global minimum of a function f:R^n->R can be computed. Consider
+
+f = @(x) sin(x.^2)+(x-1).^2/10
+ezplot(f)
+[mu,L,Ls] = verifyglobalmin(f,infsup(-10,10))
+
+%%
+% Here the list L of minima consists of one box, and the list Ls of
+% potential minima is empty. Thus the global minimum of f in [-10,10] is
+% enclosed in L with global minimum in mu.
+
+%% Failure of Matlab for global minimum of univariate function
+% The Matlab routine fminbnd tries to compute the global minimum of a
+% univariate function, but sometimes fails for simple examples. Consider
+
+f = @(x)cos(x.^2-5)+atan(x)
+close
+x = linspace(1,4,1e5);
+plot(x,f(x),x,0*x)
+title('cos(x^2-5)+atan(x)  in  [1,4]')
+
+%%
+% Obviously the global minimum on [1,4] is near x=1.3 as computed by our 
+% verification algorithm, however, Matlab's fminbnd fails by picking a
+% local minimum:
+
+[mu,L,Ls] = verifyglobalmin(f,infsup(1,4))
+Y = fminbnd(f,1,4)
+
+%% Global minima for multivariate functions
+% Consider Griewank's function, a famous test function in global optimization
+
+close
+f = funvec(@(x)( 1 + sum(x.^2)/4000 - cos(x(1))*cos(x(2)/sqrt(2)) ),zeros(2,1))
+[x,y] = meshgrid(-600:10:600,-600:10:600);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(3)
+title('Griewank''s function in [-600,600]^2 on a coarse grid')
+
+%%
+% The function on its originally given domain X := [-600,600]^2 looks rather
+% innocent, however a little zooming decovers the nature of the function.
+% Note Griewank's function has more than 200,000 local extrema in X.
+
+close
+[x,y] = meshgrid(-100:100,-100:100);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(3)
+title('Griewank''s function in [-100,100]^2 on a finer grid')
+
+%%
+% The global minimum of Griewank's function is zero with function value
+% zero. It can be verified as follows
+
+format infsup
+tic
+X = repmat(infsup(-600,600),2,1);
+[mu,L,Ls] = verifyglobalmin(@Griewank,X)
+toc
+
+%%
+% Next we display the search boxes of the algorithm. 
+
+verifyglobalmin(@Griewank,X,verifyoptimset('Display','~'));
+title('Search boxes for the 2-dimensional Griewank function')
+
+
+%%
+% Wide boxes far from
+% the global minimum zero are quickly discarded, whereas more bisections
+% are necessary near the global minimum. Zooming into the plot by a factor
+% 5000 shows that granularity of the graph:
+
+zoom(100)
+title('Zoom into search boxes for the 2-dimensional Griewank function')
+
+%%
+% It also becomes clear that we choose a midpoint slightly off the true
+% midpoint. That proves to be efficient because in benchmark examples such
+% as Griewank's function the true global minimum of often on the boundary
+% of bisected intervals. That, however, is unlikely in real-life problems.
+% That lead to the different choice of the midpoint, see 
+% 
+% S.M. Rump. Mathematically Rigorous Global Optimization in Floating-Point 
+%   Arithmetic. to appear in Optimization Methods & Software, 2018.
+
+%% Griewank's n-dimensional test function
+% Griewank's test function is in fact n-dimensional; it is defined as
+% follows:
+
+%%%
+%   n = size(x,1);
+%   y = 1 + sum(x.^2,1)/4000;
+%   p = 1;
+%   for i=1:n
+%     p = p .* cos(x(i,:)/sqrt(i));
+%   end
+%   y = y - p;
+  
+%%
+% The constraint box is [-600,600]^n, and again the global minimum is the
+% origin. For n=10 the global minimum with a maximum relative tolerance 
+% of 1e-5 for the inclusion box is computed as follows:  
+
+format infsup long e
+tic
+X = repmat(infsup(-600,600),10,1);
+[mu,L,Ls] = verifyglobalmin(@Griewank,X,verifyoptimset('TolXrel',1e-5))
+toc
+
+%%
+% Note that the number of local extrema grows exponentially with the
+% dimension. For n=10 there are about 10^29 local extrema in X.
+
+%% Global minima of a non-smooth function - The Half-Pipe
+% Consider the half-pipe, a famous test function in non-smooth optimization:
+
+f = @(x) max( x(2,:).^2 - max(x(1,:),0) , 0 )
+close
+[x,y] = meshgrid(-1:.025:1,-1:.025:1);
+surf(x,y,reshape(f([x(:) y(:)]'),size(x)))
+view(52,26)
+title('The halp-pipe in [-1,1]^2')
+
+%%
+% The global minimum of the half-pipe is zero and admitted for 
+%   all (x,0) with x <= 0    and    all (x,y) with 0 <= x <= y^2.
+% Sharp bounds (in fact, the true minimum zero) for the global minimum are 
+% computed as well a list of possible minimizers:
+
+[mu,L,Ls,data] = verifyglobalmin(f,infsup(-100,100)*ones(2,1),verifyoptimset('TolXabs',0.5)); 
+mu
+infsup(mu)
+L 
+size(Ls)
+close
+plotintval(Ls)
+title('Inclusion of global minima of the half-pipe')
+
+%%
+% By the principle of verification methods it is not possible to verify a
+% minimizer because that is an ill-posed problem. Therefore, the list L of
+% verified global minima must be empty. The list Ls of potential minimizers
+% can be refined as usual:
+
+[mu,L,Ls,data] = verifyglobalmin(data);
+mu
+size(Ls)
+close
+plotintval(Ls)
+title('Improved inclusion of global minima of the half-pipe')
+
+%% Infinite boxes
+% As has been seen in some example above, in principle a box constraint may
+% consist of infinite intervals. However, this is not working in general.
+% Consider 
+
+f = @(x)(x^3-x)
+
+%%
+% Obviously that function has the three simple roots -1, 0 and 1. Thus one
+% may expect no problems when computing all roots in some box, say
+% [-10,10]:
+
+format long _
+X = infsup(-10,10);
+[L,Ls] = verifynlssall(f,X)
+
+%%
+% Indeed that is an easy task. However, specifying the real axis for X
+% results in 
+
+format long e infsup
+X = infsup(-inf,inf);
+[L,Ls] = verifynlssall(f,X);
+L = L'
+Ls = Ls'
+
+%%
+% Now inclusions of the roots -1, 0 and 1 are computed as before, however,
+% two infinite boxes covering the negative and positive infinite range
+% remain. The reason is that f(Y)=[-inf,inf] for any real r and Y=[-inf,r] 
+% or [r,inf]. Knowing only the function handle of f, there is no better
+% answer.
+
+%% Roots on the boundary of a box
+% As a principle of verification methods, roots on the boundary of a 
+% constraint box cannot be included. Except special cases, an inclusion of
+% a root is always an interval with nonempty diameter. Thus, it cannot be
+% decided whether the true root is within the box constraint or not.
+% Consider
+
+format long
+f = @(x)(x^2 - 4)
+[L,Ls] = verifynlssall(f,infsup(-2,2))
+
+%%
+% The situation changes if the box is widened, for example
+
+X = infsup(-2,succ(2));
+[L,Ls] = verifynlssall(f,X)
+
+%%
+% The root -2 is still on the boundary, but the root +2 is in the inner of
+% the input box X. Thus an inclusion of +2 is on the new list L, the
+% boundary root -2 still on Ls. With a little more widening of X, the list
+% L contains both -2 and +2, whereas Ls is empty.
+
+%% Minima on the boundary of a box
+% Consider minimizing f(x)=(x-1)^2 on X=[-1,1]. We reformulate the function
+% to make sure that rounding error occur, even when evaluating f(1):
+
+f = @(x) sum(x/3.*(3*x-6)+1,1)
+X = infsup(-1,1)*ones(2,1)
+
+%%
+% Obviously the global minimum is x = [ 1 ; 1 ], which is on the boundary
+% of X. The global minimum is found by
+
+[mu,L,Ls] = verifyglobalmin(f,X)
+
+%%
+% The list L is empty because the minimum x=1 is on the boundary of X and,
+% by principle of verification methods, it cannot be verified that f'(x)
+% has a root in X. The inclusion mu of the minimum is narrow.
+
+%% Minima on the boundary of a box for constraint minimization
+% Consider minimizing f(x) for g(x)=0 on X for
+
+f = @(x)(x)
+g = @(x)(cos(2*atan(x)))
+X = infsup(-1,1)
+
+%%
+% Since 4*atan(1)=pi, there are exactly two feasible points -1 and 1, both
+% on the boundary of X. Thus, the minimum value of the trivial function f 
+% is -1. However,
+
+[mu,L,Ls] = verifyconstraintglobalmin(f,g,X)
+
+%%
+% According to the specification of verifyconstraintglobalmin, each box in 
+% the list L consists of a local minimum of f, on Ls are possible
+% inclusions. Thus the wide inclusion mu of the minimum value is true,
+% but with the upper bound inf it seems very week.
+%
+% However, given the information at hand, that is the best possible
+% information we can obtain. Since -1 and 1 are on the boundary of X, it
+% can not be verified whether the feasible region is empty of not. Thus the
+% minimum of f(X), without constraint, is the best information about the
+% minimum of f s.t. g(x)=0. 
+%
+% However, no better upper bound than +inf for the minimum is possible. 
+% That is because if the feasible region were empty, convention
+% says that the minimum is +inf, and that is the upper bound of mu.
+
+%%
+% Widening the box on the right allows at least to verify existence of a
+% feasible point
+
+format infsup
+X = infsup(-1,succ(1,2));
+[mu1,L1,Ls1] = verifyconstraintglobalmin(f,g,X)
+
+%%
+% This reduces mu to about [-1,1]. Since -1 is still on the boundary, it
+% cannot be verified to be feasible. Finally, widening the box X on both
+% sides moves both feasible points to the interior and the result is as
+% anticipated.
+
+e = 1e-14;
+X = infsup(-1-e,1+e);
+[mu2,L2,Ls2] = verifyconstraintglobalmin(f,g,X)
+
+%% Finding all roots of the gradient
+% For a given function f:R^n->R all roots of the gradient within a box X
+% can be computed, i.e., all stationary points. Consider
+
+format short
+n = 3;
+X = infsup(-10,10)*ones(n,1);
+tic
+[L,Ls] = verifynlssderivall(@Griewank,X,verifynlssallset('iFunMax',1e6));
+tDerivall = toc
+size(L)
+size(Ls)
+
+%%
+% That means there are 265 stationary points of the Griewank function
+% within the box [-10,10]^3. Another way to produce that result is to
+% compute explicitly given gradient of the Griewank function in some
+% function Griewanks:
+
+tic
+[L1,Ls1] = verifynlssall(@Griewanks,X,verifynlssallset('iFunMax',1e6));
+tnlssall = toc
+size(L1)
+size(Ls1)
+
+%% Parameter identification
+% Let a function f and a box X be given. Parameter identification means to
+% find for a given interval P all x in X with the property that f(x) is in
+% P. The interval P may be a point.
+%
+% As an example, consider to find the zero set of 
+%
+%   f = -(5*y - 20*y^3 + 16*y^5)^6 + (-(5*x - 20*x^3 + 16*x^5)^3 + 5*y - 20*y^3 + 16*y^5)^2
+%
+% on the box  X = infsup(-1,1)^2: 
+
+f = @(x) -(5*x(2) - 20*x(2)^3 + 16*x(2)^5)^6 + (-(5*x(1) - 20*x(1)^3 + 16*x(1)^5)^3 + 5*x(2) - 20*x(2)^3 + 16*x(2)^5)^2;
+X = infsup(-1,1)*ones(2,1);
+format short
+tic
+verifynlssparam(f,0,X,verifynlssparamset('Display','~'));
+tIntval = toc
+title('Parameter identification - default setting')
+
+%%
+% As a principal limit, it cannot be verified that the value of a function
+% is truly zero. However, certain areas can be excluded, and in the graph
+% these are the white areas. The black area are potential members of the
+% zero set. 
+
+%% Parameter identification using the midpoint rule
+% Due to overestimation by interval arithmetic, the black area is quite
+% big. That can be improved by using the midpoint rule with moderately
+% increasing computing time.
+
+tic
+verifynlssparam(f,0,X,verifynlssparamset('Display','~','Method','midrule'));
+tMidrule = toc
+title('Parameter identification using midpoint rule')
+
+%% Parameter identification using affine arithmetic
+% The picture will be further improved by using affine arithmetic. 
+
+tic
+verifynlssparam(f,0,X,verifynlssparamset('Display','~','Method','affari'));
+tAffari = toc
+title('Parameter identification using affine arithmetic')
+
+%%
+% However, the improvement comes with significantly increased computing time.
+%
+% When widening P, for example displaying all x in X such that
+% abs(f(x))<=0.2, also red areas appear. That covers points
+% definitely satisfying the desired property. 
+
+verifynlssparam(f,infsup(-0.2,0.2),X,verifynlssparamset('Display','~','Method','affari'));
+title('Parameter identification |f(x)|<=2')
+
+%%
+% A typical cut section looks as follows, where only the yellow areas are
+% undecided.
+
+axis([-0.4 0.4 -0.4 0.4])
+title('Zoom into parameter identification |f(x)|<=2')
+
+%% Zero areas of non-smooth functions
+% Consider again the half-pipe, a famous test function in non-smooth
+% optimization. As has been mentioned, the half-pipe is entirely zero for
+%   all (x,0) with x <= 0    and    all (x,y) with 0 <= x <= y^2.
+% Now the zero regions are not only one-dimensional, so that red areas
+% appear although testing for f(x)=0:
+
+f = @(x) max( x(2,:).^2 - max(x(1,:),0) , 0 )
+X = infsup(-5,5)*ones(2,1)
+verifynlssparam(f,0,X,verifynlssparamset('Display','~'));
+title('Zero set of the half-pipe')
+
+%% A 4-dimensional parameter identification problem with 2 parameters
+% Finally we show a parameter identification we found in the literature:
+%
+
+f = @(p) [ p(1,:).*exp(0.2*p(2,:)) ; 
+           p(1,:).*exp(p(2,:)) ; 
+           p(1,:).*exp(2*p(2,:)) ; 
+           p(1,:).*exp(4*p(2,:)) ]
+X = infsup(-3,3)*ones(2,1);
+P = infsup([1.5 .7 .1 -.1]',[2 .8 .3 .03]')
+tic
+verifynlssparam(f,P,X,verifynlssparamset('Display','~'));
+toc
+
+%%
+% A zoom into the feasible parameter set is as follows:
+
+axis([1.9 2.7 -1.4 -1])
+
+%%
+% and a further zoom into the upper left corner is as follows:
+
+axis([1.998 2.005 -1.055 -1.048])
+
+%%
+% In this case the picture does not change much when using the midrule or
+% affine arithmetic. 
+
+%% Display of a cardiode
+% To display a cardiode we use the definition
+
+c = @(x) sqr(sum(sqr(x),1))+4*x(1,:).*sum(sqr(x),1)-4*sqr(x(2,:))
+
+%%
+% Then it is straightforward to display the graph, that is the zero set of
+% c(x).
+
+verifynlssparam(c,0,[infsup(-5,1);infsup(-3,3)],verifynlssparamset('display','~'));
+title('The cardiode')
+
+%%
+% For a nicer heart curve, consider
+
+f = @(x)sqr(x(1,:))+2*sqr(0.6*x(1,:).^(2/3)-x(2,:))-1
+
+%%
+% Then the set of values with absolute value less than or equal to 0.1
+% looks as follows.
+
+verifynlssparam(f,midrad(0,.1),midrad(0,1.2)*ones(2,1),verifynlssparamset('display','~'));
+title('The heart')         
+
+%% Enjoy INTLAB
+% INTLAB was designed and written by S.M. Rump, head of the 
+% Institute for Reliable Computing, Hamburg University of Technology. 
+% Suggestions are always welcome to rump (at) tuhh.de
+
+##### SOURCE END #####
+--></body></html>
