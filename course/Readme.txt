@@ -1,0 +1,1 @@
+To create document from .tex-file and pictures join them in same folder and then compile.
